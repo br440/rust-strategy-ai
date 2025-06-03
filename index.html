@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rust Strategy AI</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: auto; }
+    textarea { width: 100%; height: 100px; }
+    button { padding: 10px 20px; margin-top: 10px; }
+    #answer { margin-top: 20px; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <h1>Rust Strategy AI</h1>
+  <textarea id="question" placeholder="Ask your Rust strategy question here..."></textarea>
+  <br />
+  <button onclick="askAI()">Ask AI</button>
+  <div id="answer"></div>
+
+  <script>
+    async function askAI() {
+      const question = document.getElementById("question").value.trim();
+      if (!question) {
+        alert("Please type a question.");
+        return;
+      }
+      document.getElementById("answer").textContent = "Thinking...";
+      
+      try {
+        const response = await fetch("/api/rustai", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question })
+        });
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await response.json();
+        document.getElementById("answer").textContent = data.answer || "No answer received.";
+      } catch (error) {
+        document.getElementById("answer").textContent = "Error: " + error.message;
+      }
+    }
+  </script>
+</body>
+</html>
